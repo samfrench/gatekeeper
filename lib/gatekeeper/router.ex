@@ -1,9 +1,10 @@
 defmodule Gatekeeper.Router do
   use Plug.Router
 
-  plug :match
-  plug :dispatch
-  plug Plug.Static, at: "/static", from: :server
+  plug(Gatekeeper.Plugs.ResponseTimes)
+  plug(Plug.Static, at: "/static", from: :server)
+  plug(:match)
+  plug(:dispatch)
 
   get "/hello" do
     send_resp(conn, 200, "Hello world!")
@@ -18,7 +19,7 @@ defmodule Gatekeeper.Router do
     send_file(conn, 200, "ext/static/file.html")
   end
 
-  get "/timings" do
+  get "/private/timings" do
     # Probably a gen server for timings
     timings = %{average: 100}
     json_response = Poison.encode!(timings)
@@ -26,5 +27,5 @@ defmodule Gatekeeper.Router do
     send_resp(conn, 200, json_response)
   end
 
-  match _, do: send_resp(conn, 404, "404, error not found!")
+  match(_, do: send_resp(conn, 404, "404, error not found!"))
 end
