@@ -26,5 +26,13 @@ defmodule Gatekeeper.Router do
     send_resp(conn, 200, json_response)
   end
 
+  get "/*any" do
+    response = Gatekeeper.PersonalisedManager.handle(conn)
+
+    conn = %{conn | resp_headers: conn.resp_headers ++ response.headers}
+
+    send_resp(conn, response.status_code, response.body)
+  end
+
   match(_, do: send_resp(conn, 404, "404, error not found!"))
 end
