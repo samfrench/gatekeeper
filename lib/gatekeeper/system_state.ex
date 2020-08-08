@@ -35,28 +35,29 @@ defmodule Gatekeeper.SystemState do
   end
 
   def handle_cast(:reset, state) do
-    state = Map.put(state, :timing, 0)
+    state = %{state | timing: 0}
     {:noreply, state}
   end
 
   defp calculate(update = %Gatekeeper.Timing{last: current}, %Gatekeeper.Timing{count: 0}) do
-    update = Map.put(update, :first, current)
-    update = Map.put(update, :minimum, current)
-    update = Map.put(update, :maximum, current)
-    update = Map.put(update, :average, current)
-    Map.put(update, :count, 1)
+    update = %{update | first: current}
+    update = %{update | minimum: current}
+    update = %{update | maximum: current}
+    update = %{update | average: current}
+    %{update | count: 1}
   end
 
   defp calculate(update = %Gatekeeper.Timing{last: current}, %Gatekeeper.Timing{
          count: count,
          average: average,
          first: first,
-         last: previous
+         maximum: maximum,
+         minimum: minimum
        }) do
-    update = Map.put(update, :first, first)
-    update = Map.put(update, :minimum, min(current, previous))
-    update = Map.put(update, :maximum, max(current, previous))
-    update = Map.put(update, :average, (average + current) / 2)
-    Map.put(update, :count, count + 1)
+    update = %{update | first: first}
+    update = %{update | minimum: min(current, minimum)}
+    update = %{update | maximum: max(current, maximum)}
+    update = %{update | average: (average + current) / 2}
+    %{update | count: count + 1}
   end
 end
