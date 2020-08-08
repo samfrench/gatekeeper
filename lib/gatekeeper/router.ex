@@ -26,7 +26,7 @@ defmodule Gatekeeper.Router do
     send_resp(conn, 200, json_response)
   end
 
-  get "/*any" do
+  get "/level/*any" do
     response = Gatekeeper.PersonalisedManager.handle(conn)
 
     conn = %{conn | resp_headers: conn.resp_headers ++ response.headers}
