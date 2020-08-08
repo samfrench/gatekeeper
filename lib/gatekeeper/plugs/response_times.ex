@@ -30,6 +30,6 @@ defmodule Gatekeeper.Plugs.ResponseTimes do
   defp update(false, _conn, _timing), do: nil
 
   defp update(true, _conn, timing) do
-    Gatekeeper.SystemState.update(Gatekeeper.SystemState, timing)
+    Gatekeeper.SystemState.update(Gatekeeper.SystemState, %Gatekeeper.Timing{last: timing})
   end
 end
