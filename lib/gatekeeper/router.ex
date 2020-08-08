@@ -20,8 +20,7 @@ defmodule Gatekeeper.Router do
   end
 
   get "/private/timings" do
-    # Probably a gen server for timings
-    timings = %{average: 100}
+    timings = Gatekeeper.SystemState.get(Gatekeeper.SystemState)
     json_response = Poison.encode!(timings)
 
     send_resp(conn, 200, json_response)

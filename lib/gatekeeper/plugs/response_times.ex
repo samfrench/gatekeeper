@@ -29,9 +29,7 @@ defmodule Gatekeeper.Plugs.ResponseTimes do
 
   defp update(false, _conn, _timing), do: nil
 
-  defp update(true, conn, timing) do
-    IO.inspect(conn)
-    IO.inspect(timing)
-    # @todo: Add timing to store
+  defp update(true, _conn, timing) do
+    Gatekeeper.SystemState.update(Gatekeeper.SystemState, timing)
   end
 end

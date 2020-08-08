@@ -14,8 +14,8 @@ defmodule Gatekeeper.Application do
         scheme: :http,
         plug: Gatekeeper.Router,
         options: [port: 8000]
-      )
-      # Plug.Adapters.Cowboy.child_spec(:http, Gatekeeper.Router, [], port: 8000)
+      ),
+      Gatekeeper.Supervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
