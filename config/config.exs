@@ -28,3 +28,8 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env()}.exs"
+
+config :gatekeeper,
+  default_host: System.get_env("GATEKEEPER_HOST_DEFAULT"),
+  personalised_host: System.get_env("GATEKEEPER_HOST_PERSONALISED"),
+  exceeded_host: System.get_env("GATEKEEPER_HOST_EXCEEDED")
