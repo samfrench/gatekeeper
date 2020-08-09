@@ -6,37 +6,13 @@ defmodule Gatekeeper.PersonalisedManager do
   end
 
   defp handle_level(conn, :none) do
-    fetch(conn)
+    Gatekeeper.ContentRenderer.render(conn)
   end
 
   defp handle_level(conn, personalisation_level) do
     %{average: average} = Gatekeeper.SystemState.get(Gatekeeper.SystemState)
 
-    fetch(level_exceeded?(personalisation_level, average), conn)
-  end
-
-  def fetch(_conn) do
-    %Gatekeeper.Response{
-      status_code: 200,
-      body: "Non personalised content!",
-      headers: [{"response-type", "non-personalised"}]
-    }
-  end
-
-  defp fetch(false, _conn) do
-    %Gatekeeper.Response{
-      status_code: 200,
-      body: "Personalised content!",
-      headers: [{"response-type", "personalised"}]
-    }
-  end
-
-  defp fetch(true, _conn) do
-    %Gatekeeper.Response{
-      status_code: 429,
-      body: "Other content!",
-      headers: [{"response-type", "limit-exceeded"}]
-    }
+    Gatekeeper.ContentRenderer.render(level_exceeded?(personalisation_level, average), conn)
   end
 
   defp level_exceeded?(:essential, average) when average > 3000, do: true
