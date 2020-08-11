@@ -12,8 +12,36 @@ defmodule Gatekeeper.PersonalisedManager do
   defp handle_level(conn, personalisation_level) do
     %{average: average} = Gatekeeper.SystemState.get(Gatekeeper.SystemState)
 
-    Gatekeeper.ContentRenderer.render(level_exceeded?(personalisation_level, average), conn)
+    exceeded? = level_exceeded?(personalisation_level, average)
+
+    if personalised_only_error?(exceeded?, personalisation_level) do
+      error_response()
+    else
+      response = Gatekeeper.ContentRenderer.render(exceeded?, conn)
+
+      case response do
+        %Gatekeeper.Response{status_code: 200} ->
+          response
+
+        _ ->
+          if personalised_only_error?(true, personalisation_level) do
+            error_response()
+          else
+            Gatekeeper.ContentRenderer.render(true, conn)
+          end
+      end
+    end
   end
+
+  defp error_response do
+    %Gatekeeper.Response{
+      status_code: 500,
+      body: "There has been an error"
+    }
+  end
+
+  defp personalised_only_error?(true, :essential), do: true
+  defp personalised_only_error?(_, _), do: false
 
   defp level_exceeded?(:essential, average) when average > 3000, do: true
   defp level_exceeded?(:expected, average) when average > 2000, do: true
