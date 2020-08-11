@@ -14,23 +14,24 @@ defmodule Gatekeeper.PersonalisedManager do
 
     exceeded? = level_exceeded?(personalisation_level, average)
 
-    if personalised_only_error?(exceeded?, personalisation_level) do
-      error_response()
-    else
-      response = Gatekeeper.ContentRenderer.render(exceeded?, conn)
+    response = personalised_request(exceeded?, personalisation_level, conn)
 
-      case response do
-        %Gatekeeper.Response{status_code: 200} ->
-          response
+    cond do
+      %Gatekeeper.Response{status_code: 200} ->
+        response
 
-        _ ->
-          if personalised_only_error?(true, personalisation_level) do
-            error_response()
-          else
-            Gatekeeper.ContentRenderer.render(true, conn)
-          end
-      end
+      exceeded? ->
+        error_response()
+
+      true ->
+        personalised_request(true, personalisation_level, conn)
     end
+  end
+
+  defp personalised_request(true, :essential, _conn), do: error_response()
+
+  defp personalised_request(exceeded?, _personalisation_level, conn) do
+    Gatekeeper.ContentRenderer.render(exceeded?, conn)
   end
 
   defp error_response do
@@ -39,9 +40,6 @@ defmodule Gatekeeper.PersonalisedManager do
       body: "There has been an error"
     }
   end
-
-  defp personalised_only_error?(true, :essential), do: true
-  defp personalised_only_error?(_, _), do: false
 
   defp level_exceeded?(:essential, average) when average > 3000, do: true
   defp level_exceeded?(:expected, average) when average > 2000, do: true
