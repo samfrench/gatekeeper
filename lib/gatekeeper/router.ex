@@ -2,16 +2,13 @@ defmodule Gatekeeper.Router do
   use Plug.Router
 
   plug(Gatekeeper.Plugs.ResponseTimes)
+  plug(Plug.Head)
   plug(Plug.Static, at: "/static", from: :server)
   plug(:match)
   plug(:dispatch)
 
-  get "/hello" do
-    send_resp(conn, 200, "Hello world!")
-  end
-
-  get "/hello/:user_name" do
-    send_resp(conn, 200, "Hello, #{String.capitalize(user_name)}!")
+  get "/status" do
+    send_resp(conn, 200, "OK!")
   end
 
   get "/static" do
