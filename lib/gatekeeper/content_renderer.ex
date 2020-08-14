@@ -22,9 +22,16 @@ defmodule Gatekeeper.ContentRenderer do
 
     Gatekeeper.HttpClient.fetch(url)
     |> add_response_type_header("limit-exceeded")
+    |> %{response | status: 429}
   end
 
   defp add_response_type_header(response, response_type) do
-    %{response | headers: response.headers ++ [{"response-type", response_type}]}
+    # %{response | headers: response.headers ++ [{"response-type", response_type}]}
+    %{
+      response
+      | headers:
+          (response.headers ++ [{"response-type", response_type}])
+          |> List.delete({"content-encoding", "gzip"})
+    }
   end
 end
