@@ -1,12 +1,8 @@
 defmodule Gatekeeper.HttpClient do
   def fetch(url) do
-    Mojito.request(method: :get, url: url, opts: http_opts(String.starts_with?(url, "https")))
+    MachineGun.request(:get, url)
     |> handle()
   end
-
-  # Verify none to remove certificate trust to allow for testing various origins
-  defp http_opts(true), do: [transport_opts: [verify: :verify_none]]
-  defp http_opts(false), do: []
 
   defp handle({:ok, response}) do
     %Gatekeeper.Response{

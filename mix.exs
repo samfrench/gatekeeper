@@ -26,9 +26,9 @@ defmodule Gatekeeper.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
       {:plug_cowboy, "~> 2.0"},
       # Fix cowlib due to issue with later version affecting cowboy
-      {:cowlib, "~> 2.8.0"},
+      {:cowlib, "~> 2.6"},
       {:poison, "~> 3.1"},
-      {:mojito, "~> 0.7.1"},
+      {:machine_gun, "~> 0.1.8"},
       {:observer_cli, "~> 1.5"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
