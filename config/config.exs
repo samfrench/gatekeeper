@@ -2,6 +2,17 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :machine_gun,
+  default: %{
+    # Poolboy size
+    pool_size: 512,
+    # Poolboy max_overflow
+    pool_max_overflow: 256,
+    pool_timeout: 6_000,
+    # Gun connection options
+    conn_opts: %{}
+  }
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
