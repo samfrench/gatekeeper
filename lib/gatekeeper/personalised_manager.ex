@@ -36,7 +36,7 @@ defmodule Gatekeeper.PersonalisedManager do
 
   defp error_response do
     %Gatekeeper.Response{
-      status_code: 500,
+      status_code: 202,
       body: "There has been an error"
     }
   end
